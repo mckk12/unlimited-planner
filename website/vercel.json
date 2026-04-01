@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/cinema-city/:path*",
+      "destination": "https://www.cinema-city.pl/pl/data-api-service/v1/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
+}

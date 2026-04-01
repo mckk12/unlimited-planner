@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+::view-transition-group(site-navbar) {
+  z-index: 1000;
+}
