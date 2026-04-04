@@ -7,7 +7,7 @@ Stores user account information.
 |--------|------|-------------|-------------|
 | `id` | UUID | Primary Key | Unique user identifier |
 | `username` | Text | Not Null | User's display name |
-| `ccnumber` | Text | | Credit card number (for cinema payments) |
+| `ccnumber` | Text | | Cinema City Unlimited card number |
 
 **Relationships:**
 - One-to-Many with `users_availability` (user can have multiple availability records)
