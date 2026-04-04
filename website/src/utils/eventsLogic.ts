@@ -65,7 +65,7 @@ const createBanDict = (movies: SupabaseMovie[]) => {
 const addAvailabilityToEvent = (event: EventFullData, availabilityOnDay: AvailabilityOnDay[], bans: Set<string>): EventWithAvailability => {
     const eventDate = new Date(event.dateTime);
     const startHour = eventDate.getHours();
-    const endHour = startHour + Math.floor((eventDate.getMinutes() + event.screenTime) / 60);
+    const endHour = startHour + Math.floor((eventDate.getMinutes() + event.screenTime) / 60) + 1;
     const hoursToCover = [...Array(endHour - startHour).keys()].map(h => h + startHour);
 
     // const canGoUsers = availabilityOnDay.filter(avail => hoursToCover.every(h => avail.canGo.includes(h))).map(avail => avail.username);
