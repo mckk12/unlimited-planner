@@ -1,4 +1,5 @@
 import { memo, type FC } from 'react';
+import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { SlotInteractionHandlers, SlotState } from './types';
 
 type AvailabilitySlotButtonProps = {
@@ -24,6 +25,23 @@ const AvailabilitySlotButton: FC<AvailabilitySlotButtonProps> = ({
     interactions,
     sizeClass = 'h-8',
 }) => {
+    const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        event.currentTarget.setPointerCapture(event.pointerId);
+        interactions.onBeginSwipe(dateKey, hour, locked);
+    };
+
+    const handlePointerMove = (event: ReactPointerEvent<HTMLButtonElement>) => {
+        interactions.onApplySwipeFromPoint(event.clientX, event.clientY);
+    };
+
+    const handlePointerEnd = (event: ReactPointerEvent<HTMLButtonElement>) => {
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+            event.currentTarget.releasePointerCapture(event.pointerId);
+        }
+        interactions.onEndSwipe();
+    };
+
     return (
         <button
             type="button"
@@ -31,48 +49,11 @@ const AvailabilitySlotButton: FC<AvailabilitySlotButtonProps> = ({
             data-date-key={dateKey}
             data-hour={hour}
             data-locked={locked}
-            onPointerDown={event => {
-                event.preventDefault();
-                interactions.onBeginSwipe(dateKey, hour, locked);
-            }}
+            onPointerDown={handlePointerDown}
             onPointerEnter={() => interactions.onApplySwipe(dateKey, hour, locked)}
-            onPointerMove={() => interactions.onApplySwipe(dateKey, hour, locked)}
-            onTouchStart={event => {
-                if (typeof window !== 'undefined' && 'PointerEvent' in window) {
-                    return;
-                }
-
-                if (event.cancelable) {
-                    event.preventDefault();
-                }
-                interactions.onBeginSwipe(dateKey, hour, locked);
-            }}
-            onTouchMove={event => {
-                if (typeof window !== 'undefined' && 'PointerEvent' in window) {
-                    return;
-                }
-
-                if (event.cancelable) {
-                    event.preventDefault();
-                }
-
-                const touch = event.touches[0];
-                if (touch) {
-                    interactions.onApplySwipeFromPoint(touch.clientX, touch.clientY);
-                }
-            }}
-            onTouchEnd={() => {
-                if (typeof window !== 'undefined' && 'PointerEvent' in window) {
-                    return;
-                }
-                interactions.onEndSwipe();
-            }}
-            onTouchCancel={() => {
-                if (typeof window !== 'undefined' && 'PointerEvent' in window) {
-                    return;
-                }
-                interactions.onEndSwipe();
-            }}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerEnd}
+            onPointerCancel={handlePointerEnd}
             onClick={event => {
                 if (event.detail === 0) {
                     interactions.onClickSlot(dateKey, hour);

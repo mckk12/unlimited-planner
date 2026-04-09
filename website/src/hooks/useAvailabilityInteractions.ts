@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import type { SlotInteractionHandlers, SlotState } from '../components/availability';
 import { cycleSlotState } from '../utils/availability';
 
@@ -74,22 +74,6 @@ export const useAvailabilityInteractions = ({
 
         applySwipeToSlot(dateKey, hour, locked);
     }, [applySwipeToSlot, getSlotState, loadingAvailability]);
-
-    useEffect(() => {
-        const handlePointerEnd = () => endSwipe();
-
-        window.addEventListener('pointerup', handlePointerEnd);
-        window.addEventListener('pointercancel', handlePointerEnd);
-        window.addEventListener('touchend', handlePointerEnd);
-        window.addEventListener('touchcancel', handlePointerEnd);
-
-        return () => {
-            window.removeEventListener('pointerup', handlePointerEnd);
-            window.removeEventListener('pointercancel', handlePointerEnd);
-            window.removeEventListener('touchend', handlePointerEnd);
-            window.removeEventListener('touchcancel', handlePointerEnd);
-        };
-    }, [endSwipe]);
 
     const interactions = useMemo<SlotInteractionHandlers>(() => ({
         onBeginSwipe: beginSwipe,
